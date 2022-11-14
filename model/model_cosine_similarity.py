@@ -6,45 +6,46 @@ from spotipy.oauth2 import SpotifyClientCredentials
 df_raw = pd.read_csv('tracks_features.csv')
 
 class SongRecommender():
+
+    @staticmethod
+    def get_song_info(song_name, client_id, client_secret):
+        '''
+        Get song info and features from spotify api based on song_name
+        '''
+        sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
+        song_data = sp.search(q=song_name, type='track')
+        song_info = {}
+        song_info['id'] = song_data['tracks']['items'][0]['id']
+        song_info['name'] = song_data['tracks']['items'][0]['name']
+        song_info['artists'] = song_data['tracks']['items'][0]['artists'][0]['name']
+        song_info['album'] = song_data['tracks']['items'][0]['album']['name']
+        
+        features = sp.audio_features(song_info['id'])[0]
+        song_info['danceability'] = features['danceability']
+        song_info['energy'] = features['energy']
+        song_info['acousticness'] = features['acousticness']
+        song_info['valence'] = features['valence']
+        song_info['tempo'] = features['tempo']
+        song_info['loudness'] = features['loudness']
+        song_info['key'] = features['key']
+        song_info['mode'] = features['mode']
+        song_info['speechiness'] = features['speechiness']
+        song_info['instrumentalness'] = features['instrumentalness']
+        song_info['time_signature'] = features['time_signature']
+        song_info['liveness'] = features['liveness']
+        
+        return song_info
     
-    def __init__(self, song_name, song_data, client_id, client_secret):
+    def __init__(self, song_name, df_raw, client_id, client_secret):
 
-        def get_song_info(song_name, client_id, client_secret):
-            '''
-            Get song info and features from spotify api based on song_name
-            '''
-            sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
-            song_data = sp.search(q=song_name, type='track')
-            song_info = {}
-            song_info['id'] = song_data['tracks']['items'][0]['id']
-            song_info['name'] = song_data['tracks']['items'][0]['name']
-            song_info['artists'] = song_data['tracks']['items'][0]['artists'][0]['name']
-            song_info['album'] = song_data['tracks']['items'][0]['album']['name']
-            
-            features = sp.audio_features(song_info['id'])[0]
-            song_info['danceability'] = features['danceability']
-            song_info['energy'] = features['energy']
-            song_info['acousticness'] = features['acousticness']
-            song_info['valence'] = features['valence']
-            song_info['tempo'] = features['tempo']
-            song_info['loudness'] = features['loudness']
-            song_info['key'] = features['key']
-            song_info['mode'] = features['mode']
-            song_info['speechiness'] = features['speechiness']
-            song_info['instrumentalness'] = features['instrumentalness']
-            song_info['time_signature'] = features['time_signature']
-            song_info['liveness'] = features['liveness']
-            
-            return song_info
+        self.song_info = SongRecommender.get_song_info(song_name, client_id, client_secret)
+        self.df_raw = df_raw
 
-        self.song_info = get_song_info(song_name, client_id, client_secret)
-        self.df_raw = song_data
-
-    def cosine_sim_calc(self, x, y):
+    def cosine_sim_calc(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         '''
         Calculate cosine similarity for all songs
-        x: songs from dataset
-        y: song that is being compared to dataset
+        x: numpy array of attributes of each song from dataset
+        y: numpy array of attributes of song that is being compared to dataset
         Returns numpy array with similarity score for each song in dataset
         '''
         dot_prods = (x*y).sum(1)
