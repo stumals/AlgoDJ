@@ -1,7 +1,7 @@
 import os
 import dash_cytoscape as cyto
 from dotenv import load_dotenv
-from spotify_artist_network import ArtistNetwork
+from .spotify_query.spotify_artist_network import ArtistNetwork
 from dash import Dash, html
 
 load_dotenv()
@@ -62,7 +62,7 @@ app.layout = html.Div([
     cyto.Cytoscape(
         id='cytoscape-layout-1',
         elements=elements,
-        style={'width': '100%', 'height': '500px', 'fill': 'steelblue'},
+        style={'width': '100%', 'height': '500px'},
         stylesheet=[
             {
                 'selector': 'node',
