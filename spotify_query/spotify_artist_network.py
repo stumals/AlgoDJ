@@ -1,28 +1,30 @@
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
 import networkx as nx
+from typing import List, Tuple
+from spotipyauth import SpotipyAuth
 
-class ArtistNetwork():
+class ArtistNetwork(SpotipyAuth):
+    
+    sp = SpotipyAuth.client
 
-    def __init__(self, artist, client_id, client_secret, limit=100, num_related=5):
+    def __init__(self, artist, limit=100, num_related=5):
         self.artist = artist
         self.limit = limit
         self.num_related = num_related
-        self.sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
+        self.artist_data = self.sp.search(q=self.artist, type='artist')
+        self.artist_id = self.artist_data['artists']['items'][0]['id']
+        self.artist_name = self.artist_data['artists']['items'][0]['name']
+        self.artist_info = (self.artist_id, self.artist_name)
 
-        artist_data = self.sp.search(q=self.artist, type='artist')
-        artist_id = artist_data['artists']['items'][0]['id']
-        artist_name = artist_data['artists']['items'][0]['name']
-        self.artist_info = (artist_id, artist_name)
-
-    def get_related_artists(self, artist_id):
+    def get_related_artists(self, artist_id: str = None) -> List[Tuple]:
+        if artist_id is None:
+            artist_id = self.artist_id
         related = []
         r = self.sp.artist_related_artists(artist_id)
         for a in r['artists']:
             related.append((a['id'], a['name']))
         return related[:self.num_related]
 
-    def get_artist_network(self):
+    def create_artist_network(self) -> None:
         artist_id = self.artist_info[0]
         ids = []
         ids.append(artist_id)
@@ -44,14 +46,14 @@ class ArtistNetwork():
             self.nodes.append(name[1])
         self.edges = network[:]
 
-    def create_graph(self):
+    def create_graph(self) -> None:
         self.g = nx.Graph()
         for n in self.nodes:
             self.g.add_node(n)
         for e in self.edges:
             self.g.add_edge(e[0], e[1])
     
-    def pagerank(self):
+    def sort_graph_pagerank(self) -> None:
         pagerank = nx.pagerank(self.g)
         pagerank_sorted = sorted(pagerank.items(), key=lambda x:x[1], reverse=True)
-        return pagerank_sorted
+        self.g = pagerank_sorted
