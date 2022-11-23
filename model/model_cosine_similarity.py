@@ -1,14 +1,9 @@
 import pandas as pd
 import numpy as np
 import networkx as nx
-import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
 pd.options.mode.chained_assignment = None
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
-
-df_raw = pd.read_csv('tracks_features.csv')
-df_raw['artists'] = df_raw.loc[:,'artists'].str.strip("[]'").str.split(',')
 
 class SongRecommender():
     
