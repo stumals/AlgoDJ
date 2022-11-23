@@ -3,7 +3,7 @@ cse6242
 Please use Python 3.9.12
 
 
-IMPORTANT: Run pip install -r requirements.txt before running code!
+IMPORTANT: Run "pip install -r requirements.txt" before running code!
 
 
 To test spotify_query.py, please create a .env file in /data and create the following constants:<br />
