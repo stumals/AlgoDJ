@@ -1,22 +1,43 @@
+#%%
 import pandas as pd
 import numpy as np
 import networkx as nx
+import datetime
 pd.options.mode.chained_assignment = None
 import warnings
-warnings.simplefilter(action='ignore', category=FutureWarning)
-
+warnings.filterwarnings("ignore")
+#%%
 class SongRecommender():
     
-    def __init__(self, df_raw, song_name, song_id=None, client_id=None, client_secret=None):
+    def __init__(self, df_raw, song_name, song_id=None, gender='NA', age='NA', decade_range=1.5):
 
         assert song_name in list(df_raw['name']), 'Song not in tracks_features dataset'
-            
+        
+        self.gender = gender
+        self.age = age
+
         if song_id == None:
             self.song_info = df_raw[df_raw['name']==song_name].iloc[0,:]
         else:
+            # song id used used when building artist network (some songs have same name)
             self.song_info = df_raw[df_raw['id']==song_id]
-            
-        self.df_raw = df_raw
+            # set age to 'NA' when building artist network
+            self.age = 'NA'
+
+        if self.age == 'NA':
+            self.df_raw = df_raw
+        else:
+            year = datetime.datetime.now().year
+            year_born = year - self.age
+            year_var = decade_range * 10
+            self.df_raw = df_raw[(df_raw['year'] <= (year_born + year_var)) & (df_raw['year'] >= (year_born - year_var))]
+
+            # add selected song back to dataset in case it was filtered out by year
+            row = self.song_info.to_frame().transpose()
+            if self.df_raw[self.df_raw['id'].eq(row['id'])].empty:
+                self.df_raw = pd.concat([row, self.df_raw], axis=0)
+            # reset indices of dataframe
+            self.df_raw = self.df_raw.reset_index(drop=True)
         
     def cosine_sim_calc(self, x: np.ndarray, y: np.ndarray) -> np.ndarray:
         '''
@@ -33,26 +54,40 @@ class SongRecommender():
         return dot_prods/norm_prod
 
     def recommender(self, num_songs=10):
+        '''
+        Top num_songs recommended based on cosine similarity score using keep_cosl
+        Keep cols are determined by self.gender
+        
+        Returns pandas dataframe of recommendations and self.df_raw that was filtered based on age input (to be used in artist_network)
+        '''
         
         songs = self.df_raw.copy()
-        keep_cols = ['danceability', 'energy', 'acousticness', 'valence', 'tempo',
-                    'loudness', 'key', 'mode', 'speechiness', 'instrumentalness',
-                    'time_signature', 'liveness']
+        if self.gender == 'NA':
+            keep_cols = ['danceability', 'energy', 'acousticness', 'valence', 'tempo',
+                        'loudness', 'key', 'mode', 'speechiness', 'instrumentalness',
+                        'time_signature', 'liveness']
+        elif self.gender.lower() == 'male':
+            keep_cols = ['energy', 'acousticness', 'valence', 'tempo',
+                        'loudness', 'key', 'mode', 'instrumentalness',
+                        'liveness']
+        else:
+            keep_cols = ['danceability', 'energy', 'acousticness', 'valence',
+                        'loudness', 'key', 'mode', 'speechiness', 'time_signature']
+                
         df = self.df_raw[keep_cols]
         song_index = self.df_raw[self.df_raw['id'].eq(self.song_info['id'])].index[0]
 
-        x = df.to_numpy()
-        y = x[song_index,:].reshape(1,-1).repeat(x.shape[0], axis=0)
+        x = df.to_numpy().astype(float)
+        y = x[song_index,:].reshape(1,-1).repeat(x.shape[0], axis=0).astype(float)
 
         cosine_sim = self.cosine_sim_calc(x, y)
         songs['similarity_score'] = cosine_sim
 
         sorted_ids = np.argsort(cosine_sim)[::-1][:num_songs]
 
-        #return songs.sort_values(by='similarity_score', ascending=False).iloc[:num_songs, :]
-        return songs.loc[sorted_ids, :]
+        return (songs.loc[sorted_ids, :], songs)
 
-def artist_network(df_raw, playlist, limit=20, num_songs=10, num_related=5):
+def artist_network(df_raw, playlist, limit=20, num_songs=10, num_related=5, gender='NA'):
     '''
     Build artist network based artist of first song in playlist
 
@@ -74,7 +109,8 @@ def artist_network(df_raw, playlist, limit=20, num_songs=10, num_related=5):
             graph.add_edge(artist_main, a)
     i = 1
     while i < limit:
-        new_playlist = SongRecommender(df_raw, song_names_base[i], song_id=song_ids_base[i]).recommender(num_songs=num_songs)
+        new_p = SongRecommender(df_raw, song_names_base[i], song_id=song_ids_base[i], gender=gender)
+        new_playlist = new_p.recommender(num_songs=num_songs)[0]
         artists_new = list(new_playlist['artists'])
         song_ids_new = list(new_playlist['id'])
         song_names_new = list(new_playlist['name'])
