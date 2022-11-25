@@ -1,8 +1,14 @@
--e git+https://github.com/vizwizgroup/AlgoDJ.git@547c5d3858385c260ebccc419d498db825d7f8ec#egg=algodj
+aiobotocore==2.4.0
+aiohttp==3.8.3
+aioitertools==0.11.0
+aiosignal==1.3.1
+-e git+https://github.com/vizwizgroup/AlgoDJ.git@af93b81e7d90de1ff4beb940b51c178db26c2f67#egg=algodj
 asttokens==2.1.0
 async-timeout==4.0.2
+attrs==22.1.0
 backcall==0.2.0
 beautifulsoup4==4.11.1
+botocore==1.27.59
 Brotli==1.0.9
 certifi==2022.9.24
 chardet==5.0.0
@@ -26,6 +32,8 @@ entrypoints==0.4
 executing==1.2.0
 Flask==2.1.0
 Flask-Compress==1.13
+frozenlist==1.3.3
+fsspec==2022.11.0
 future==0.18.2
 gunicorn==20.0.4
 idna==3.4
@@ -36,6 +44,7 @@ ismember==1.0.2
 itsdangerous==2.1.2
 jedi==0.18.1
 Jinja2==3.1.2
+jmespath==1.0.1
 joblib==1.2.0
 jupyter_client==7.4.7
 jupyter_core==5.0.0
@@ -43,6 +52,7 @@ kiwisolver==1.4.4
 MarkupSafe==2.1.1
 matplotlib==3.1.0
 matplotlib-inline==0.1.6
+multidict==6.0.2
 nest-asyncio==1.5.6
 networkx==2.8.8
 numpy==1.23.4
@@ -71,6 +81,7 @@ pyzmq==24.0.1
 redis==4.3.4
 requests==2.28.1
 retrying==1.3.3
+s3fs==2022.11.0
 scikit-learn==1.1.3
 scipy==1.9.3
 seaborn==0.12.1
@@ -83,10 +94,12 @@ tenacity==8.1.0
 threadpoolctl==3.1.0
 tornado==6.2
 traitlets==5.5.0
+typing_extensions==4.4.0
 urllib3==1.26.12
 wcwidth==0.2.5
 Werkzeug==2.2.2
 wordcloud==1.8.2.2
 wrapt==1.14.1
 xlrd==1.2.0
+yarl==1.8.1
 zipp==3.10.0
