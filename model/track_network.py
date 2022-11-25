@@ -5,7 +5,7 @@ from model.model_cosine_similarity import SongRecommender
 
 class TrackNetwork(Network):
 
-    def __init__(self, limit=10, artistrelated=5, artisttracks=3, src="million"):
+    def __init__(self, limit=10, artistrelated=5, artisttracks=3, src="1k"):
         # self.track_info = track_info
         self.limit = limit
         self.artistrelated = artistrelated
@@ -20,7 +20,7 @@ class TrackNetwork(Network):
     
 if __name__ == "__main__":
     track_network = TrackNetwork()
-    playlist = track_network.get_playlist("She Belongs to Me")
-    network = track_network.build_network(track_network.songbank, playlist, "artist")
+    playlist = track_network.get_playlist("Saints Go Marching In")
+    network = track_network.build_network(track_network.songbank, playlist, "track")
     print(network.nodes())
     # print(sp_obj.get_related_tracks(sp_obj.get_related_artists(sp_obj.artist_id)))

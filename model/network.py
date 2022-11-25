@@ -1,4 +1,5 @@
 import networkx as nx
+from data.dataset import LoadData
 from model.model_cosine_similarity import SongRecommender
 
 class Network():
@@ -16,11 +17,12 @@ class Network():
         self.limit = limit
         self.num_songs = num_songs
         self.num_related = num_related
+        self.songbank = LoadData("1k").get_data()
         
     
     def build_network(self, df_raw, playlist, type) -> nx.Graph:
         '''
-        Build artist network based artist of first song in playlist
+        Build artist network based on artist of first song in playlist
 
         limit: number of times to generate of pipplaylist from arists being generated in network
         num_songs: number of songs generated from each additional playlist
@@ -30,11 +32,15 @@ class Network():
         '''
 
         def _get_main_metric(type, artists_base, song_names_base):
+            
+            # flatten the artist list
+            artists_base = [num for elem in artists_base for num in elem]
+            
             if type == "track":
-                main_metric = song_names_base[0][0]
+                main_metric = song_names_base[0]
                 main_metric_list = song_names_base
             else:
-                main_metric = artists_base[0][0]
+                main_metric = artists_base[0]
                 main_metric_list = artists_base
             return (main_metric, main_metric_list)
         
@@ -45,10 +51,9 @@ class Network():
         
         main_metric, main_metric_list = _get_main_metric(type, artists_base, song_names_base)
         
-        for ml in main_metric_list:
-            for m in ml:
-                graph.add_node(m)
-                graph.add_edge(main_metric, m)
+        for m in main_metric_list:
+            graph.add_node(m)
+            graph.add_edge(main_metric, m)
                 
         i = 1
         while i < self.limit:
@@ -59,10 +64,9 @@ class Network():
 
             main_metric, main_metric_list = _get_main_metric(type, artists_new, song_names_new)
         
-            for ml in main_metric_list:
-                for m in ml:
-                    graph.add_node(m)
-                    graph.add_edge(main_metric, m)
+            for m in main_metric_list:
+                graph.add_node(m)
+                graph.add_edge(main_metric, m)
 
             for j in range(self.num_related):
                 song_ids_base.append(song_ids_new[j])
