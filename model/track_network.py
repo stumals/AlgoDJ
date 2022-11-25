@@ -21,6 +21,6 @@ class TrackNetwork(Network):
 if __name__ == "__main__":
     track_network = TrackNetwork()
     playlist = track_network.get_playlist("Saints Go Marching In")
-    network = track_network.build_network(track_network.songbank, playlist, "track")
+    network = track_network.build_network(track_network.songbank, playlist, "artist")
     print(network.nodes())
     # print(sp_obj.get_related_tracks(sp_obj.get_related_artists(sp_obj.artist_id)))
