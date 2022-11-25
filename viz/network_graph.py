@@ -1,59 +1,35 @@
 import os
 import dash_cytoscape as cyto
-from dotenv import load_dotenv
-from .spotify_query.spotify_artist_network import ArtistNetwork
 from dash import Dash, html
+from model.track_network import TrackNetwork
 
-load_dotenv()
+# Load extra layouts
+cyto.load_extra_layouts()
 
-CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
-CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
+# load_dotenv()
+
+# CLIENT_ID = os.getenv('SPOTIPY_CLIENT_ID')
+# CLIENT_SECRET = os.getenv('SPOTIPY_CLIENT_SECRET')
 
 
 app = Dash(__name__)
 
-artistnetwork = ArtistNetwork(artist='Polyphia', client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
-artist_data = artistnetwork.sp.search(q=artistnetwork.artist, type='artist')
-artistid = artist_data['artists']['items'][0]['id']
-artist_tuples = [(artistid, artistnetwork.artist)]
-artist_tuples += artistnetwork.get_related_artists(artistid)
+track_network = TrackNetwork(limit=1000, num_songs=5, num_related=5, src="millions")
+playlist = track_network.get_playlist("Saints Go Marching In")
+network = track_network.build_network(track_network.songbank, playlist, "track")
 
-connections = []
-
-for artist_lvl_one in artist_tuples[1:]:
-    artistnetwork = ArtistNetwork(artist=artist_lvl_one[1], client_id=CLIENT_ID, client_secret=CLIENT_SECRET)
-    artist_data = artistnetwork.sp.search(q=artistnetwork.artist, type='artist')
-    artistid = artist_data['artists']['items'][0]['id']
-    next_level = artistnetwork.get_related_artists(artistid)
-    connections.append((artist_tuples[0][0], artist_lvl_one[0]))
-    for artist_lvl_two in next_level[1:]:
-        idx = len(artist_tuples)
-        artist_tuples += artistnetwork.get_related_artists(artistid)
-        connections.append((artist_tuples[idx][0], artist_lvl_two[0]))
-
-coords = [(i, i+1) for i in range(len(artist_tuples))]
-
-init_artist_tuples = [(artist_tuples[_][0], artist_tuples[_][1], coords[_][0], coords[_][1]) for _ in range(len(coords))]
-
-# for artist in artist_tuples[1:]:
-# recast artist tuples to include coordinate for plot
-        
-
-    # artist_tuples = [(artistid, artistnetwork.artist)]
-    # artist_tuples += artistnetwork.get_related_artists(artistid)
 
 nodes = [
     {
-        'data': {'id': short, 'label': label},
-        'position': {'x': 10 * lat, 'y': -10 * long}
+        'data': {'id': node[0], 'label': node[1]},
     }
-    for short, label, long, lat in init_artist_tuples
+    for node in network.nodes()
 ]
 
 
 edges = [
-    {'data': {'source': source, 'target': target}}
-    for source, target in connections
+    {'data': {'source': connection[0][0], 'target': connection[1][0]}}
+    for connection in network.edges()
 ]
 
 elements = nodes + edges
@@ -68,12 +44,19 @@ app.layout = html.Div([
                 'selector': 'node',
                     'style': {
                         'content': 'data(label)',
-                        'background-color': 'red'
+                        'background-color': 'steelblue'
                     }
+            },
+            {  
+                'selector': 'edge',
+                    'style': {
+                        'width': 2
+                        }
             }],
         layout={
-            'name': 'concentric',
-            'minNodeSpacing': 40,
+            'name': 'breadthfirst',
+            'minNodeSpacing': 120,
+            'animate': False,
         }
     )
 ])
