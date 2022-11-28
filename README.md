@@ -2,6 +2,7 @@
 cse6242
 Please use Python 3.9.12
 
+
 To test app and visuals,
 
 please do the following:
@@ -10,9 +11,6 @@ please do the following:
 - engage virtual environment with command "source venv/bin/activate"
 - pip install requirements.txt with "pip install -r requirements.txt"
 - pip install project home directory with "pip install -e ."
-
-
-
 
 
 To test spotify_query.py, please create a .env file in /data and create the following constants:<br />
