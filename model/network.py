@@ -1,14 +1,11 @@
+import pdb
 import networkx as nx
 from data.dataset import LoadData
 from model.model_cosine_similarity import SongRecommender
 
 class Network():
     
-    # set defaults for class variables
-    # limit = 20
-    # num_songs = 10
-    # num_related = 5
-    
+    # set defaults for class variables  
     limit = 10
     num_songs = 5
     num_related = 3
@@ -55,6 +52,7 @@ class Network():
                 song_names_base.append(song_names_new[j])
         
         graph = nx.Graph()
+        pdb.set_trace()
         artists_base = list(playlist['artists'])
         song_ids_base = list(playlist['id'])
         song_names_base = list(playlist['name'])

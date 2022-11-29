@@ -1,12 +1,13 @@
-#%%
+
 import pandas as pd
 import numpy as np
 import networkx as nx
 import datetime
 pd.options.mode.chained_assignment = None
 import warnings
+from typing import Tuple
 warnings.filterwarnings("ignore")
-#%%
+
 class SongRecommender():
     
     def __init__(self, df_raw, song_name, song_id=None, gender='NA', age='NA', decade_range=1.5):
@@ -53,7 +54,7 @@ class SongRecommender():
         
         return dot_prods/norm_prod
 
-    def recommender(self, num_songs=10):
+    def recommender(self, num_songs=10) -> Tuple[pd.DataFrame, ...]:
         '''
         Top num_songs recommended based on cosine similarity score using keep_cosl
         Keep cols are determined by self.gender
