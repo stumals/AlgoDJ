@@ -1,42 +1,38 @@
-
-from pathlib import Path
+import numpy as np
 import pandas as pd
+from pathlib import Path
 from data.dataset import LoadData
 from dash_holoniq_wordcloud import DashWordcloud
 from dash import Dash, html
 from model.model_cosine_similarity import SongRecommender
 from model.network import Network
 
-df_raw = LoadData().get_data()
-playlist = SongRecommender(df_raw, 'She Belongs to Me').recommender()
 
-g = Network(limit=20, num_songs=10, num_related=3).build_network(df_raw, playlist, "artist")
-#g.degree
-#g.degree['Bob Dylan']
+# df_raw = LoadData("1k").get_data()
+track_network = Network(limit=20, num_songs=10, num_related=3)
+recs = track_network.get_recommendations('Gimmie Trouble')
+g = track_network.build_network(recs, "artists")
 
 
 dicttolist = list(g.degree)
 artists1 = [list(ele) for ele in dicttolist]
-artists = artists1[0:10] #limiting to just ten artists in the word cloud for now for spacing
+artists = artists1[0:20] #limiting to just ten artists in the word cloud for now for spacing
+maxval = 0
+sizeadjuster = 30
+for row in artists:
+    if row[1] >= maxval:
+        maxval = row[1]
+    row[0] = row[0].replace('\'', '')
+for row in artists:
+    row[1] = (row[1]/maxval) * sizeadjuster
+for row in artists:
+    if row[1] <= 10:
+        row[1] = 10
+print(artists)
 #artists
 
 
 app = Dash(__name__)
-
-# this was the dummy data that I was working with before getting
-# the data from Stu's classes
-# artists = [
-#     ["Taylor Swift", 30],
-#     ["The Rolling Stones", 20],
-#     ["Red Hot Chili Peppers", 10],
-#     ["The Beatles", 40],
-#     ["Beyonce", 30],
-#     ["Coldplay", 20],
-#     ["Maroon 5", 20],
-#     ["Foo Fighters", 10],
-#     ["Zac Brown Band", 10],
-#     ["O.A.R.", 10]
-# ]
 
 app.layout = html.Div([
     html.Div([
@@ -50,11 +46,12 @@ app.layout = html.Div([
             shuffle=False,
             rotateRatio=0.5,
             shrinkToFit=True,
-            shape='circle',
+            shape='square',
             hover=True
             )
         ])
     ])
 
+
 if __name__ == '__main__':
-    app.run_server('0.0.0.0',debug=True, threaded=True, use_reloader=True, port=8888)
+    app.run_server("127.0.0.1",debug=True, threaded=False, use_reloader=False, port=8050)
