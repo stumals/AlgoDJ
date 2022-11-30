@@ -10,7 +10,7 @@ class Network():
     limit = 10
     num_songs = 5
     num_related = 3
-    src = "1k"
+    src = "million"
     songbank = LoadData(src).get_data()
     
     def __init__(self, limit, num_songs, num_related):
@@ -62,7 +62,6 @@ class Network():
                 song_names_base.append(song_names_new[j])
         
         graph = nx.Graph()
-        # pdb.set_trace()
         playlist = self.get_playlist(recommender_obj) 
         artists_base = list(playlist['artists'])
         song_ids_base = list(playlist['id'])
