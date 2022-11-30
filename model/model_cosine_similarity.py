@@ -14,10 +14,13 @@ class SongRecommender():
 
         assert song_name in list(df_raw['name']), 'Song not in tracks_features dataset'
         
+        self.song_name = song_name
+        self.song_id = song_id
         self.gender = gender
         self.age = age
+        self.decade_range = decade_range
 
-        if song_id == None:
+        if self.song_id == None:
             self.song_info = df_raw[df_raw['name']==song_name].iloc[0,:]
         else:
             # song id used used when building artist network (some songs have same name)
@@ -30,7 +33,7 @@ class SongRecommender():
         else:
             year = datetime.datetime.now().year
             year_born = year - self.age
-            year_var = decade_range * 10
+            year_var = self.decade_range * 10
             self.df_raw = df_raw[(df_raw['year'] <= (year_born + year_var)) & (df_raw['year'] >= (year_born - year_var))]
 
             # add selected song back to dataset in case it was filtered out by year

@@ -8,11 +8,10 @@ from model.model_cosine_similarity import SongRecommender
 from model.network import Network
 
 
-df_raw = LoadData("1k").get_data()
-playlist = SongRecommender(df_raw, 'Gimmie Trouble').recommender()
-
-#playlist is now a tuple of dataframe, so just choose one randomly as an example
-g = Network(limit=20, num_songs=10, num_related=3).build_network(df_raw, np.random.choice(np.array(playlist), 1), "artist")
+# df_raw = LoadData("1k").get_data()
+track_network = Network(limit=20, num_songs=10, num_related=3)
+recs = track_network.get_recommendations('Gimmie Trouble')
+g = track_network.build_network(recs, "artists")
 
 
 dicttolist = list(g.degree)
@@ -55,4 +54,4 @@ app.layout = html.Div([
 
 
 if __name__ == '__main__':
-    app.run_server('0.0.0.0',debug=True, threaded=False, use_reloader=False, port=8000)
+    app.run_server("127.0.0.1",debug=True, threaded=False, use_reloader=False, port=8050)
