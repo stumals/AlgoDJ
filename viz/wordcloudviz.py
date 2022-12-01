@@ -1,4 +1,5 @@
 import numpy as np
+import pdb
 import pandas as pd
 from pathlib import Path
 from data.dataset import LoadData
@@ -7,12 +8,10 @@ from dash import Dash, html
 from model.model_cosine_similarity import SongRecommender
 from model.network import Network
 
-
-# df_raw = LoadData("1k").get_data()
 track_network = Network(limit=20, num_songs=10, num_related=3)
 recs = track_network.get_recommendations('Gimmie Trouble')
 g = track_network.build_network(recs, "artists")
-
+playlist = track_network.get_playlist(recs, num_songs=10)
 
 dicttolist = list(g.degree)
 artists1 = [list(ele) for ele in dicttolist]

@@ -12,7 +12,9 @@ app = Dash(__name__)
 track_network = TrackNetwork(limit=10, num_songs=5, num_related=3)
 recs = track_network.get_recommendations("Gimmie Trouble")
 network = track_network.build_network(recs, "track")
-# print(network.nodes())
+playlist = track_network.get_playlist(recs, num_songs=10)
+pdb.set_trace()
+
 nodes = [
     {
         'data': {'id': node[0], 'label': node[1]},
