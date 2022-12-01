@@ -1,5 +1,3 @@
-import pdb
-import math
 import dash_cytoscape as cyto
 from dash import Dash, html
 from model.track_network import TrackNetwork
@@ -13,7 +11,6 @@ track_network = TrackNetwork(limit=10, num_songs=5, num_related=3)
 recs = track_network.get_recommendations("Gimmie Trouble")
 network = track_network.build_network(recs, "track")
 playlist = track_network.get_playlist(recs, num_songs=10)
-pdb.set_trace()
 
 nodes = [
     {
@@ -30,7 +27,7 @@ edges = [
 ]
 
 elements = nodes + edges
-# pdb.set_trace()
+
 app.layout = html.Div([
     cyto.Cytoscape(
         id='cytoscape-layout-1',
