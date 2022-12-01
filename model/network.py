@@ -10,7 +10,7 @@ class Network():
     limit = 10
     num_songs = 5
     num_related = 3
-    src = "million"
+    src = "1k"
     songbank = LoadData(src).get_data()
     
     def __init__(self, limit, num_songs, num_related):
