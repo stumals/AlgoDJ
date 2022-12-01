@@ -1,7 +1,6 @@
 import pandas as pd
 from pathlib import Path
 
-
 class LoadData():
     
     def __init__(self, src="million"):

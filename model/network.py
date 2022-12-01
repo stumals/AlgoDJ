@@ -1,4 +1,3 @@
-import pdb
 import pandas as pd
 import networkx as nx
 from data.dataset import LoadData
@@ -10,7 +9,7 @@ class Network():
     limit = 10
     num_songs = 5
     num_related = 3
-    src = "1k"
+    src = "million"
     songbank = LoadData(src).get_data()
     
     def __init__(self, limit, num_songs, num_related):
