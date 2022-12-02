@@ -28,7 +28,7 @@ edges = [
 
 elements = nodes + edges
 
-app.layout = html.Div([
+networkgraph = html.Div([
     cyto.Cytoscape(
         id='cytoscape-layout-1',
         elements=elements,
@@ -40,7 +40,8 @@ app.layout = html.Div([
                         'content': 'data(label)',
                         'height': 20,
                         'width': 20,
-                        'background-color': '#30c9bc'                                 
+                        'background-color': '#30c9bc',
+                        'color': '#ffffff'                               
                     }
             },
             {  
@@ -77,5 +78,5 @@ app.layout = html.Div([
     )
 ])
 
-if __name__ == "__main__":
-    app.run_server(debug=True)
+# if __name__ == "__main__":
+#     app.run_server(debug=True)

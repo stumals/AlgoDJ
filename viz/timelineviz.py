@@ -15,7 +15,7 @@ fig = go.Figure(px.histogram(playlist, x = 'release_date', color = 'explicit', t
 fig.update_layout(bargap = 0.2)
 
 app = dash.Dash()
-app.layout = html.Div([
+timeline = html.Div([
     dcc.Graph(figure = fig)
 ])
-app.run_server(debug = True, use_reloader = False)
+# app.run_server(debug = True, use_reloader = False)
