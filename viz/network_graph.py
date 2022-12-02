@@ -32,7 +32,7 @@ networkgraph = html.Div([
     cyto.Cytoscape(
         id='cytoscape-layout-1',
         elements=elements,
-        style={'width': '100%', 'height': '500px'},
+        style={'width': '100%', 'height': '370px'},
         stylesheet=[
             {
                 'selector': 'node',

@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import dash_bootstrap_components as dbc 
 from pathlib import Path
 from data.dataset import LoadData
 from dash_holoniq_wordcloud import DashWordcloud
@@ -30,21 +31,22 @@ print(artists)
 #artists
 
 
-app = Dash(__name__)
+app = Dash(__name__, external_stylesheets=[dbc.themes.DARKLY], 
+           meta_tags=[{'name': 'viewport', 'content': 'width=device-width,initial-scale=1.0'}])
 
 wordcloud = html.Div([
     html.Div([
         DashWordcloud(
             id='wordcloud',
             list=artists,
-            width=300, height=200,
-            gridSize=16,
-            color='#f0f0c0',
-            backgroundColor='#001f00',
+            width=540, height=350,
+            gridSize=20,
+            color='#73AFB6',
+            backgroundColor='#222222',
             shuffle=False,
             rotateRatio=0.5,
             shrinkToFit=True,
-            shape='square',
+            shape='circle',
             hover=True
             )
         ])
