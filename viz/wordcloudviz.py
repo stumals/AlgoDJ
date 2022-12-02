@@ -32,7 +32,7 @@ print(artists)
 
 app = Dash(__name__)
 
-app.layout = html.Div([
+wordcloud = html.Div([
     html.Div([
         DashWordcloud(
             id='wordcloud',
@@ -51,5 +51,5 @@ app.layout = html.Div([
     ])
 
 
-if __name__ == '__main__':
-    app.run_server("127.0.0.1",debug=True, threaded=False, use_reloader=False, port=8050)
+# if __name__ == '__main__':
+#     app.run_server("127.0.0.1",debug=True, threaded=False, use_reloader=False, port=8050)
