@@ -30,16 +30,19 @@ app = dash.Dash(__name__ ,external_stylesheets=[dbc.themes.DARKLY], meta_tags=[{
 
 
 ADJ_Layout = dbc.Container([
-# app.layout = dbc.Container([
     dbc.Row([Header]),
     dbc.Row([
-        dbc.Col([
-            dbc.Row([UserInput1, UserInput2, UserInput3, wordcloud]),
-            # dbc.Row([playlist]),
-            ]),
-        dbc.Col([networkgraph, timeline]),
-        # dbc.Col([]),
+        dbc.Col([dbc.Row([dbc.Row([UserInput1, UserInput2, UserInput3])]), dbc.Row([wordcloud])]),
+        dbc.Col([dbc.Row([networkgraph]), dbc.Row([timeline])])
         ]),
+    # dbc.Row([
+    #     dbc.Col([
+    #         dbc.Row([UserInput1, UserInput2, UserInput3, wordcloud]),
+    #         # dbc.Row([playlist]),
+    #         ]),
+    #     dbc.Col([networkgraph, timeline]),
+    #     # dbc.Col([]),
+    #     ]),
     dcc.Store(id="store-data", data=[], storage_type="memory")
 ])
 
