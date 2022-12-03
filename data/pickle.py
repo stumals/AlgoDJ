@@ -4,7 +4,18 @@ import os
 from pathlib import Path
 
 
-def create_pickle_data(track_network_obj, song_name, num_songs_playlist):
+def create_pickle_data(track_network_obj, song_name, num_songs_playlist, gender='NA', age='NA'):
+
+    # create data with track_network object, network type, song name
+    print('recs')
+    recs = track_network_obj.get_recommendations(song_name, gender=gender, age=age)
+    print('recs complete')
+    network_artist = track_network_obj.build_network(recs, 'artist')
+    print('network artist complete')
+    network_track = track_network_obj.build_network(recs, 'track')
+    print('network track complete')
+    playlist = track_network_obj.get_playlist(recs, num_songs=num_songs_playlist)
+    print('playlist complete')
 
     # Assumes current working directory is AlgoDJ project
     assert os.getcwd()[-6:] == 'AlgoDJ', 'Current directory not in AlgoDJ project'    
@@ -16,12 +27,6 @@ def create_pickle_data(track_network_obj, song_name, num_songs_playlist):
     except:
         os.mkdir(Path.cwd() / song_name)
         os.chdir(Path.cwd() / song_name)
-    
-    # create data with track_network object, network type, song name
-    recs = track_network_obj.get_recommendations(song_name)
-    network_artist = track_network_obj.build_network(recs, 'artist')
-    network_track = track_network_obj.build_network(recs, 'track')
-    playlist = track_network_obj.get_playlist(recs, num_songs=num_songs_playlist)
 
     # create pickle files
     playlist.to_pickle("{}_playlist.pickle".format(song_name))
