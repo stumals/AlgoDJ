@@ -1,7 +1,11 @@
+import os
+import pdb
 import pandas as pd
 import networkx as nx
+from pathlib import Path
 from data.dataset import LoadData
-from model.model_cosine_similarity import SongRecommender
+from data.pickle import get_pickle_data
+from model.model_cosine_similarity import SongRecommender, SongRecommenderCached
 
 class Network():
     
@@ -9,8 +13,6 @@ class Network():
     limit = 10
     num_songs = 5
     num_related = 3
-    src = "1k"
-    songbank = LoadData(src).get_data()
     
     def __init__(self, limit, num_songs, num_related):
         self.limit = limit
@@ -20,9 +22,15 @@ class Network():
     @staticmethod
     def get_playlist(recommender_obj, num_songs=10) -> pd.DataFrame:
         # return only the filtered playlist
+        # pdb.set_trace()
+        if recommender_obj.__class__.__name__ == "SongRecommenderCached":
+            return get_pickle_data(recommender_obj.songsample)["playlist"]
         return recommender_obj.recommender(num_songs)[0]
     
     def get_recommendations(self, songsample, song_id=None, gender='NA', age='NA', decade_range=1.5):
+        if songsample in os.listdir(Path(Path.cwd(), "data", "pickle_data")):
+            return SongRecommenderCached(songsample)
+        self.songbank = LoadData().get_data()
         return SongRecommender(self.songbank, songsample, song_id, gender, age, decade_range)
     
     def build_network(self, recommender_obj, type) -> nx.Graph:
@@ -35,6 +43,11 @@ class Network():
 
         returns networkx graph
         '''
+        # pdb.set_trace()
+        if recommender_obj.__class__.__name__ == "SongRecommenderCached":
+            if type == "track":
+                return get_pickle_data(recommender_obj.songsample)["network_track"]
+            return get_pickle_data(recommender_obj.songsample)["network_artist"]
 
         def _get_main_metric(type, artists_base, song_ids_base, song_names_base) -> tuple:
             
