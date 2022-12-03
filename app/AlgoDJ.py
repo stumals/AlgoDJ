@@ -11,6 +11,7 @@ from viz.user_input_row3 import UserInput3
 from viz.wordcloudviz import WordCloudViz
 from viz.timelineviz import TimeLineViz
 from viz.network_graph import NetworkGraph
+from viz.data_table import PlaylistTable
 from viz.user_input_row1 import *
 from viz.user_input_row3 import *
 from model.track_network import TrackNetwork
@@ -25,6 +26,7 @@ playlist = track_network.get_playlist(recs, num_songs=10)
 networkgraph = NetworkGraph(user_input).networkgraphapp
 wordcloud = WordCloudViz(user_input).wordcloudapp
 timeline = TimeLineViz(user_input).timelineapp
+playlist_table = PlaylistTable(user_input).app.layout
 
 app = dash.Dash(__name__ ,external_stylesheets=[dbc.themes.DARKLY], meta_tags=[{'name': 'viewport', 'content': 'width=device-width,initial-scale=1.0'}])
 server = app.server
@@ -75,8 +77,8 @@ app.layout = dbc.Container([
     html.Div([dbc.Container([
 dbc.Row([Header]),
 dbc.Row([
-    dbc.Col([dbc.Row([dbc.Row([UserInput1, UserInput2, UserInput3])]), dbc.Row([wordcloud])]),
-    dbc.Col([dbc.Row([networkgraph]), dbc.Row([timeline])])
+    dbc.Col([dbc.Row([dbc.Row([UserInput1, UserInput2, UserInput3])]), dbc.Row([playlist_table])]),
+    dbc.Col([dbc.Row([networkgraph]), dbc.Row([timeline]), dbc.Row([wordcloud])])
     ]),
 dcc.Store(id="store-data", data=[], storage_type="memory"),
 html.Div(id="hidden", style={"display": "none"})
@@ -96,6 +98,7 @@ def update_song(n_clicks, ui):
         networkgraph = NetworkGraph(ui).networkgraphapp
         wordcloud = WordCloudViz(ui).wordcloudapp
         timeline = TimeLineViz(ui).timelineapp
+        playlist_table = PlaylistTable(ui).app.layout
         UserInput2 = html.Div([
                     dbc.Row([
                         dbc.Col([
@@ -138,8 +141,8 @@ def update_song(n_clicks, ui):
             html.Div([dbc.Container([
         dbc.Row([Header]),
         dbc.Row([
-            dbc.Col([dbc.Row([dbc.Row([UserInput1, UserInput2, UserInput3])]), dbc.Row([wordcloud])]),
-            dbc.Col([dbc.Row([networkgraph]), dbc.Row([timeline])])
+            dbc.Col([dbc.Row([dbc.Row([UserInput1, UserInput2, UserInput3])]), dbc.Row([playlist_table])]),
+            dbc.Col([dbc.Row([networkgraph]), dbc.Row([timeline]), dbc.Row([wordcloud])])
             ]),
         dcc.Store(id="store-data", data=[], storage_type="memory"),
         html.Div(id="hidden", style={"display": "none"})
