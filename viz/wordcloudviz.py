@@ -32,10 +32,8 @@ class WordCloudViz():
         self.app = Dash(__name__, external_stylesheets=[dbc.themes.DARKLY], 
                 meta_tags=[{'name': 'viewport', 'content': 'width=device-width,initial-scale=1.0'}])
 
-        self.wordcloudapp = html.Div([
-            html.Div([
-                DashWordcloud(
-                    id='wordcloud',
+        self.wordcloudapp = DashWordcloud(
+                    id='word-cloud',
                     list=artists,
                     width=540, height=350,
                     gridSize=20,
@@ -47,8 +45,6 @@ class WordCloudViz():
                     shape='circle',
                     hover=True
                     )
-                ])
-            ])
 
 
         # if __name__ == '__main__':

@@ -28,7 +28,5 @@ class TimeLineViz():
         # style = {'height': '300px', 'width': '540px'}
 
         self.app = dash.Dash()
-        self.timelineapp = html.Div([
-            dcc.Graph(figure = fig),
-        ])
+        self.timelineapp = dcc.Graph(figure = fig, id= "time-line")
         # app.run_server(debug = True, use_reloader = False)

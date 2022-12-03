@@ -29,9 +29,8 @@ class NetworkGraph():
 
         elements = nodes + edges
 
-        self.networkgraphapp = html.Div([
-            cyto.Cytoscape(
-                id='cytoscape-layout-1',
+        self.networkgraphapp = cyto.Cytoscape(
+                id='network-graph',
                 elements=elements,
                 style={'width': '100%', 'height': '370px'},
                 stylesheet=[
@@ -77,7 +76,6 @@ class NetworkGraph():
                     'animate': False,
                 }
             )
-        ])
 
         # if __name__ == "__main__":
         #     app.run_server(debug=True)
