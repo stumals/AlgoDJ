@@ -8,6 +8,10 @@ import warnings
 from typing import Tuple
 warnings.filterwarnings("ignore")
 
+class SongRecommenderCached():
+    def __init__(self, songsample):
+        self.songsample = songsample
+
 class SongRecommender():
     
     def __init__(self, df_raw, song_name, song_id=None, gender='NA', age='NA', decade_range=1.5):

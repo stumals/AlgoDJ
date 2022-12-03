@@ -2,8 +2,6 @@ import pandas as pd
 import pickle
 import os
 from pathlib import Path
-from typing import List
-from model.track_network import TrackNetwork
 
 
 def create_pickle_data(track_network_obj, song_name, num_songs_playlist):
@@ -33,19 +31,17 @@ def create_pickle_data(track_network_obj, song_name, num_songs_playlist):
         pickle.dump(network_track, f) 
 
 
-def get_pickle_data(song_name):
+def get_pickle_data(song_name: str) -> dict:
 
     # Assumes current working directory is AlgoDJ project
-    assert os.getcwd()[-6:] == 'AlgoDJ', 'Current directory not in AlgoDJ project'    
-    os.chdir(Path.cwd() / 'data' / 'pickle_data' / song_name)
-
+    dirpath = Path(Path.cwd(), "data", "pickle_data", song_name)
     data = {}
-    data['playlist'] = pd.read_pickle('{}_playlist.pickle'.format(song_name))
+    data['playlist'] = pd.read_pickle(Path(dirpath, '{}_playlist.pickle'.format(song_name)))
     
-    with open('{}_network_artist.pickle'.format(song_name), 'rb') as f:
+    with open(Path(dirpath, '{}_network_artist.pickle'.format(song_name)), 'rb') as f:
         data['network_artist'] = pickle.load(f)
 
-    with open('{}_network_track.pickle'.format(song_name), 'rb') as f:
+    with open(Path(dirpath, '{}_network_track.pickle'.format(song_name)), 'rb') as f:
         data['network_track'] = pickle.load(f)
     
     return data

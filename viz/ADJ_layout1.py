@@ -9,24 +9,26 @@ from viz.header import Header
 from viz.user_input_row1 import UserInput1
 from viz.user_input_row2 import UserInput2
 from viz.user_input_row3 import UserInput3
-from viz.wordcloudviz import wordcloud
-from viz.timelineviz import timeline
-from viz.network_graph import networkgraph
-# from viz.network_graph import Network_Graph
+from viz.wordcloudviz import WordCloudViz
+from viz.timelineviz import TimeLineViz
+from viz.network_graph import NetworkGraph
 from viz.user_input_row1 import *
 from viz.user_input_row2 import *
 from viz.user_input_row3 import *
 from model.track_network import TrackNetwork
 
+user_input = "Down on the Farm"
 
 track_network = TrackNetwork(limit=10, num_songs=5, num_related=3)
-recs = track_network.get_recommendations("Gimmie Trouble")
+recs = track_network.get_recommendations(user_input)
 network = track_network.build_network(recs, "track")
 playlist = track_network.get_playlist(recs, num_songs=10)
+networkgraph = NetworkGraph(user_input).networkgraphapp
+wordcloud = WordCloudViz(user_input).wordcloudapp
+timeline = TimeLineViz(user_input).timelineapp
 
 
 app = dash.Dash(__name__ ,external_stylesheets=[dbc.themes.DARKLY], meta_tags=[{'name': 'viewport', 'content': 'width=device-width,initial-scale=1.0'}])
-
 
 
 ADJ_Layout = dbc.Container([
